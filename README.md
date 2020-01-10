@@ -26,7 +26,7 @@ so it can emit optimized code based on those assumptions.
 
 Here's an example of how a handler I use can display the information given to the function:
 
-![Assuming Example Handler](https://i.imgur.com/E49uu0h.png)
+![Assuming Example Handler](https://raw.githubusercontent.com/ghassanpl/assuming/master/doc/msgbox.png)
 
 ## Dependencies
 
