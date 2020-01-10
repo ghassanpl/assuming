@@ -28,8 +28,9 @@ Here's an example of how a handler I use can display the information given to th
 
 ![Assuming Example Handler](https://raw.githubusercontent.com/ghassanpl/assuming/master/doc/msgbox.png)
 
-## Dependencies
+## Requirements
 
+* C++17 compliant compiler/stdlib
 * [fmt](https://github.com/fmtlib/fmt) (with possible upgrade path to `std::format`)
 * [GSL](https://github.com/microsoft/GSL) (specifically `gsl::span` and `GSL_UNLIKELY` & `GSL_ASSUME`)
 * [googletest](https://github.com/google/googletest) for testing only
