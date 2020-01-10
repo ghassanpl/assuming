@@ -119,6 +119,16 @@ void ReportAssumptionFailure(detail::source_location where, std::string_view exp
 * Change `fmt::format` to `std::format` (and do something about `fmt::ptr`)
 * Use `std::source_location` instead of the macros neccessary right now
 
+## Implementation notes
+
+* To facilitate evaluating the arguments only once, they are evaluated via `decltype(auto) arg_value = (arg);`, so make sure that operation is valid and not expensive, as it is ALWAYS evaluated
+* In release mode, the compiler assumption is hinted using `GSL_ASSUME` which specifies that "It is unspecified whether or not cond is actually evaluated.", so that may be a problem right now
+* The function name is gotten using `__PRETTY_FUNCTION__` or `__FUNCSIG__`
+* The `unlikely` attribute is applied to the condition
+* Values for the `data` argument are formatted using the `fmt` library, so make sure they are formattable using it
+* `[fmt, args...]` is also passed straight to `fmt` to be converted to `additional_data`; giving these arguments is optional
+* Container arguments (e.g. to `AssumingEmpty`) are not formatted for `data`, only their size is
+
 ## TODO
 
 * Add static_asserts for concepts the macro arguments must meet
