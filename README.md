@@ -36,63 +36,67 @@ Here's an example of how a handler I use can display the information given to th
 * Implement `ReportAssumptionFailure(...)`:
 * Use the `Assuming*` macros
 
-### Report Function
+## Report Function
 
 ```c++
 void ReportAssumptionFailure(detail::source_location where, std::string_view expectation, std::initializer_list<std::pair<std::string_view, std::string>> values, std::string data);
 ```
 
-### Assuming* Macros
+## Assuming* Macros
 
 **Note:** All arguments will be evaluated only once.
 
-#### Assuming(exp, [fmt, args...])
+### Assuming(exp, [fmt, args...])
 **Checked Expression**: `!exp`
 
-#### AssumingNull(exp, [fmt, args...])
+### AssumingNull(exp, [fmt, args...])
 **Checked Expression**: `exp != nullptr`
 
-#### AssumingNotNull(exp, [fmt, args...])
+### AssumingNotNull(exp, [fmt, args...])
 **Checked Expression**: `exp == nullptr`
 
-#### AssumingBinOp(a, b, op, text, [fmt, args...])
+### AssumingBinOp(a, b, op, text, [fmt, args...])
 **Checked Expression**: `a op b`
 
-#### AssumingEqual(a, b, [fmt, args...])
+### AssumingEqual(a, b, [fmt, args...])
 **Checked Expression**: `a == b`
 
-#### AssumingNotEqual(a, b, [fmt, args...])
+### AssumingNotEqual(a, b, [fmt, args...])
 **Checked Expression**: `a != b`
 
-#### AssumingGreater(a, b, [fmt, args...])
+### AssumingGreater(a, b, [fmt, args...])
 **Checked Expression**: `a > b`
 
-#### AssumingLess(a, b, [fmt, args...])
+### AssumingLess(a, b, [fmt, args...])
 **Checked Expression**: `a < b`
 
-#### AssumingGreaterEqual(a, b, [fmt, args...])
+### AssumingGreaterEqual(a, b, [fmt, args...])
 **Checked Expression**: `a >= b`
 
 #### AssumingLessEqual(a, b, [fmt, args...])
 **Checked Expression**: `a <= b`
 
-#### AssumingEmpty(exp, [fmt, args...]) 
+### AssumingEmpty(exp, [fmt, args...]) 
 **Checked Expression**: `!empty(exp)` where `std::empty` is ADL-enabled
+
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-#### AssumingNotEmpty(exp, [fmt, args...]) 
+### AssumingNotEmpty(exp, [fmt, args...]) 
 **Checked Expression**: `empty(exp)` where `std::empty` is ADL-enabled
+
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-#### AssumingNullOrEmpty(exp, [fmt, args...])
+### AssumingNullOrEmpty(exp, [fmt, args...])
 **Checked Expression**: `!(exp == nullptr || exp[0] == 0;)` for `const char*`-decayed arguments, `!empty(exp)` with `std::empty` ADL-enabled otherwise
+
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-#### AssumingNotNullOrEmpty(exp, [fmt, args...])
+### AssumingNotNullOrEmpty(exp, [fmt, args...])
 **Checked Expression**: `(exp == nullptr || exp[0] == 0;)` for `const char*`-decayed arguments, `empty(exp)` with `std::empty` ADL-enabled otherwise
+
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-#### AssumingValidIndex(index, container, [fmt, args...])
+### AssumingValidIndex(index, container, [fmt, args...])
 **Checked Expression**: `!(index >= 0 && size_t(index) < size(container))` (where `std::size` is ADL-enabled)
 
 ## Upgrade path for C++20
