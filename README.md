@@ -7,6 +7,10 @@ A small assertion library for C++17/20
 
 TODO
 
+## Features
+
+TODO
+
 ## Example
 
 ```c++
@@ -42,62 +46,73 @@ Here's an example of how a handler I use can display the information given to th
 void ReportAssumptionFailure(detail::source_location where, std::string_view expectation, std::initializer_list<std::pair<std::string_view, std::string>> values, std::string data);
 ```
 
-## Assuming* Macros
+## `Assuming*` Macros
 
 **Note:** All arguments will be evaluated only once.
 
-### Assuming(exp, [fmt, args...])
-**Checked Expression**: `!exp`
+### `Assuming(exp, [fmt, args...])`
+**Checked Expression**: `!exp`  
+**Expectation Message**: `<exp> will evaluate to true`
 
-### AssumingNull(exp, [fmt, args...])
-**Checked Expression**: `exp != nullptr`
+### `AssumingNull(exp, [fmt, args...])`
+**Checked Expression**: `exp != nullptr`  
+**Expectation Message**: `<exp> will be null`
 
-### AssumingNotNull(exp, [fmt, args...])
-**Checked Expression**: `exp == nullptr`
+### `AssumingNotNull(exp, [fmt, args...])`
+**Checked Expression**: `exp == nullptr`  
+**Expectation Message**: `<exp> will not be null`
 
-### AssumingBinOp(a, b, op, text, [fmt, args...])
-**Checked Expression**: `a op b`
+### `AssumingBinOp(a, b, op, text, [fmt, args...])`
+**Checked Expression**: `!(a op b)`  
+**Expectation Message**: `<a> will <text> <b>`
 
-### AssumingEqual(a, b, [fmt, args...])
-**Checked Expression**: `a == b`
+### `AssumingEqual(a, b, [fmt, args...])`
+**Checked Expression**: `!(a == b)`  
+**Expectation Message**: `<a> will be equal to <b>`
 
-### AssumingNotEqual(a, b, [fmt, args...])
-**Checked Expression**: `a != b`
+### `AssumingNotEqual(a, b, [fmt, args...])`
+**Checked Expression**: `!(a != b)`  
+**Expectation Message**: `<a> will not be equal to <b>`
 
-### AssumingGreater(a, b, [fmt, args...])
-**Checked Expression**: `a > b`
+### `AssumingGreater(a, b, [fmt, args...])`
+**Checked Expression**: `!(a > b)`  
+**Expectation Message**: `<a> will be greater than <b>`
 
-### AssumingLess(a, b, [fmt, args...])
-**Checked Expression**: `a < b`
+### `AssumingLess(a, b, [fmt, args...])`
+**Checked Expression**: `!(a < b)`  
+**Expectation Message**: `<a> will be less than <b>`
 
-### AssumingGreaterEqual(a, b, [fmt, args...])
-**Checked Expression**: `a >= b`
+### `AssumingGreaterEqual(a, b, [fmt, args...])`
+**Checked Expression**: `!(a >= b)`  
+**Expectation Message**: `<a> will be greater or equal to <b>`
 
-#### AssumingLessEqual(a, b, [fmt, args...])
-**Checked Expression**: `a <= b`
+### `AssumingLessEqual(a, b, [fmt, args...])`
+**Checked Expression**: `!(a <= b)`  
+**Expectation Message**: `<a> will be less or equal to <b>`
 
-### AssumingEmpty(exp, [fmt, args...]) 
-**Checked Expression**: `!empty(exp)` where `std::empty` is ADL-enabled
-
+### `AssumingEmpty(exp, [fmt, args...])`
+**Checked Expression**: `!empty(exp)` where `std::empty` is ADL-enabled  
+**Expectation Message**: `<exp> will be empty`  
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-### AssumingNotEmpty(exp, [fmt, args...]) 
-**Checked Expression**: `empty(exp)` where `std::empty` is ADL-enabled
-
+### `AssumingNotEmpty(exp, [fmt, args...])`
+**Checked Expression**: `empty(exp)` where `std::empty` is ADL-enabled  
+**Expectation Message**: `<exp> will not be empty`  
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-### AssumingNullOrEmpty(exp, [fmt, args...])
-**Checked Expression**: `!(exp == nullptr || exp[0] == 0;)` for `const char*`-decayed arguments, `!empty(exp)` with `std::empty` ADL-enabled otherwise
-
+### `AssumingNullOrEmpty(exp, [fmt, args...])`
+**Checked Expression**: `!(exp == nullptr || exp[0] == 0)` for `const char*`-decayed arguments, `!empty(exp)` with `std::empty` ADL-enabled otherwise  
+**Expectation Message**: `<exp> will be null or empty`  
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-### AssumingNotNullOrEmpty(exp, [fmt, args...])
-**Checked Expression**: `(exp == nullptr || exp[0] == 0;)` for `const char*`-decayed arguments, `empty(exp)` with `std::empty` ADL-enabled otherwise
-
+### `AssumingNotNullOrEmpty(exp, [fmt, args...])`
+**Checked Expression**: `(exp == nullptr || exp[0] == 0)` for `const char*`-decayed arguments, `empty(exp)` with `std::empty` ADL-enabled otherwise  
+**Expectation Message**: `<exp> will not be null or empty`  
 **Note**: `size(exp)` will also be evaluated (where `std::size` is ADL-enabled)
 
-### AssumingValidIndex(index, container, [fmt, args...])
-**Checked Expression**: `!(index >= 0 && size_t(index) < size(container))` (where `std::size` is ADL-enabled)
+### `AssumingValidIndex(index, container, [fmt, args...])`
+**Checked Expression**: `!(index >= 0 && size_t(index) < size(container))` (where `std::size` is ADL-enabled)  
+**Expectation Message**: `<index> will be a valid index to <container>`
 
 ## Upgrade path for C++20
 
