@@ -50,10 +50,10 @@
 	ReportAssumptionFailure(ASSUMING_SL, #exp " will not be empty", { { "size of " #exp, fmt::format("{}", size(_assuming_exp_v)) } }, detail::AdditionalDataToString(__VA_ARGS__)); }
 
 #define AssumingNullOrEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!detail::IsNullOrEmpty(_assuming_exp_v))) \
-	ReportAssumptionFailure(ASSUMING_SL, #exp " will be empty", { { #exp, _assuming_exp_v ? fmt::format("'{}'", _assuming_exp_v) : "(null)" } }, detail::AdditionalDataToString(__VA_ARGS__)); }
+	ReportAssumptionFailure(ASSUMING_SL, #exp " will be null or empty", { { #exp, _assuming_exp_v ? fmt::format("'{}'", _assuming_exp_v) : "(null)" } }, detail::AdditionalDataToString(__VA_ARGS__)); }
 
 #define AssumingNotNullOrEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(detail::IsNullOrEmpty(_assuming_exp_v))) \
-	ReportAssumptionFailure(ASSUMING_SL, #exp " will not be empty", { { #exp, _assuming_exp_v ? fmt::format("'{}'", _assuming_exp_v) : "(null)" } }, detail::AdditionalDataToString(__VA_ARGS__)); }
+	ReportAssumptionFailure(ASSUMING_SL, #exp " will not be null or empty", { { #exp, _assuming_exp_v ? fmt::format("'{}'", _assuming_exp_v) : "(null)" } }, detail::AdditionalDataToString(__VA_ARGS__)); }
 
 #define AssumingValidIndex(_index, _container, ...) { using std::size; decltype(auto) _assuming_index = (_index); decltype(auto) _assuming_container = (_container); const auto _assuming_container_size = size(_assuming_container); \
 	if (GSL_UNLIKELY(!(_assuming_index >= 0 && size_t(_assuming_index) < _assuming_container_size))) { \
