@@ -35,7 +35,7 @@ struct AssumingTest : public ::testing::Test
     assumption_failed = true;
     last_where = where;
     last_expectation = expectation;
-    fmt::print("Failed assumption that {}\n", expectation);
+    //fmt::print("Failed assumption that {}\n", expectation);
     last_values = { values.begin(), values.end() };
     last_data = std::move(data);
   }

@@ -64,7 +64,21 @@
 
 #else
 
-#define Assuming(exp, ...) { decltype(auto) exp_v = (exp); !!(!exp_v); GSL_ASSUME(!(exp)); }
+#define Assuming(exp, ...) GSL_ASSUME(!(exp))
+#define AssumingNull(exp, ...) GSL_ASSUME(!((exp) != nullptr))
+#define AssumingNotNull(exp, ...) GSL_ASSUME(!((exp) == nullptr))
+#define AssumingBinOp(a, b, op, text, ...) GSL_ASSUME(((a) op (b)))
+#define AssumingEqual(a, b, ...) AssumingBinOp(a, b, ==, "be equal to", __VA_ARGS__)
+#define AssumingNotEqual(a, b, ...) AssumingBinOp(a, b, !=, "not be equal to", __VA_ARGS__)
+#define AssumingGreater(a, b, ...) AssumingBinOp(a, b, >, "be greater than", __VA_ARGS__)
+#define AssumingLess(a, b, ...) AssumingBinOp(a, b, <, "be less than", __VA_ARGS__)
+#define AssumingGreaterEqual(a, b, ...) AssumingBinOp(a, b, >=, "be greater or equal to", __VA_ARGS__)
+#define AssumingLessEqual(a, b, ...) AssumingBinOp(a, b, <=, "be less or equal to", __VA_ARGS__)
+#define AssumingEmpty(exp, ...) { using std::empty; GSL_ASSUME(empty(exp)); }
+#define AssumingNotEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(!empty(exp)); }
+#define AssumingNullOrEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(detail::IsNullOrEmpty(exp));  }
+#define AssumingNotNullOrEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(!detail::IsNullOrEmpty(exp)); }
+#define AssumingValidIndex(_index, _container, ...) { using std::size; decltype(auto) _assuming_index = (_index); GSL_ASSUME(((_assuming_index) >= 0 && size_t(_assuming_index) < size(_container))); }
 
 #endif
 
