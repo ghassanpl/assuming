@@ -6,7 +6,6 @@
 
 #include <fmt/format.h>
 #include <gsl/gsl_assert>
-#include <gsl/span>
 
 #ifndef ASSUMING_DEBUG
 #ifdef NDEBUG
@@ -20,7 +19,7 @@
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
-#define ASSUMING_SL {__LINE__, __FILE__, __PRETTY_FUNCTION__}
+#define ASSUMING_SL {__LINE__, __FILE__, __PRETTY_FUNCTION__, 0}
 
 #if ASSUMING_DEBUG
 
