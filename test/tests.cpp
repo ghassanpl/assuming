@@ -11,6 +11,8 @@
 struct AssumingTest;
 AssumingTest* current_test = nullptr;
 
+using namespace ghassanpl;
+
 using name_value_pair = std::pair<std::string_view, std::string>;
 
 struct AssumingTest : public ::testing::Test
@@ -99,7 +101,7 @@ TEST_F(AssumingTest, AssumingEqual_works)
   std::pair<int, double> q = { 5, 6 };
   EXPECT_ASSUMPTION_FAILED(AssumingEqual, q.first, q.second);
 
-  name_value_pair const values[] = { {"q.first", "5"}, {"q.second", "6.0"} };
+  name_value_pair const values[] = { {"q.first", "5"}, {"q.second", "6"} };
   ASSERT_TRUE(compare(values, last_values));
 
   const double value = 0.4;
@@ -145,7 +147,7 @@ TEST_F(AssumingTest, assumings_evaluate_arguments_only_once)
 
 /// TODO: Make sure everything works when ASSUMING_DEBUG is not defined
 
-void ReportAssumptionFailure(detail::source_location where, std::string_view expectation, std::initializer_list<name_value_pair> values, std::string data)
+void ghassanpl::ReportAssumptionFailure(detail::source_location where, std::string_view expectation, std::initializer_list<name_value_pair> values, std::string data)
 {
   current_test->ReportAssumptionFailure(where, expectation, std::move(values), std::move(data));
 }
