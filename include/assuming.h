@@ -36,67 +36,101 @@
 
 #if ASSUMING_DEBUG
 
-#define Assuming(exp, ...) { if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!_assuming_exp_v)) \
+#define Assume(exp, ...) { if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!_assuming_exp_v)) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will evalute to true", { { #exp, fmt::format(FMT_STRING("{}"), ::ghassanpl::detail::GetFormattable(std::move(_assuming_exp_v))) } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingNull(exp, ...) { if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(_assuming_exp_v != nullptr)) \
+#define AssumeNull(exp, ...) { if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(_assuming_exp_v != nullptr)) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will be null", { { #exp, fmt::format(FMT_STRING("{}"), fmt::ptr(_assuming_exp_v)) } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingNotNull(exp, ...) { if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(_assuming_exp_v == nullptr)) \
+#define AssumeNotNull(exp, ...) { using ::std::to_address; if (decltype(auto) _assuming_exp_v = to_address(exp); GSL_UNLIKELY(_assuming_exp_v == nullptr)) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will not be null", { { #exp, fmt::format(FMT_STRING("{}"), fmt::ptr(_assuming_exp_v)) } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingBinOp(a, b, op, text, ...) { decltype(auto) _assuming_a_v = (a); decltype(auto) _assuming_b_v = (b); if (GSL_UNLIKELY(!(_assuming_a_v op _assuming_b_v))) \
+#define AssumeBinOp(a, b, op, text, ...) { decltype(auto) _assuming_a_v = (a); decltype(auto) _assuming_b_v = (b); if (GSL_UNLIKELY(!(_assuming_a_v op _assuming_b_v))) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #a " will " text " " #b, { \
 		{ #a, fmt::format(FMT_STRING("{}"), ::ghassanpl::detail::GetFormattable(std::move(_assuming_a_v))) }, \
 		{ #b, fmt::format(FMT_STRING("{}"), ::ghassanpl::detail::GetFormattable(std::move(_assuming_b_v))) } \
 	}, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingEqual(a, b, ...) AssumingBinOp(a, b, ==, "be equal to", __VA_ARGS__)
-#define AssumingNotEqual(a, b, ...) AssumingBinOp(a, b, !=, "not be equal to", __VA_ARGS__)
-#define AssumingGreater(a, b, ...) AssumingBinOp(a, b, >, "be greater than", __VA_ARGS__)
-#define AssumingLess(a, b, ...) AssumingBinOp(a, b, <, "be less than", __VA_ARGS__)
-#define AssumingGreaterEqual(a, b, ...) AssumingBinOp(a, b, >=, "be greater or equal to", __VA_ARGS__)
-#define AssumingLessEqual(a, b, ...) AssumingBinOp(a, b, <=, "be less or equal to", __VA_ARGS__)
+#define AssumeEqual(a, b, ...) AssumeBinOp(a, b, ==, "be equal to", __VA_ARGS__)
+#define AssumeNotEqual(a, b, ...) AssumeBinOp(a, b, !=, "not be equal to", __VA_ARGS__)
+#define AssumeGreater(a, b, ...) AssumeBinOp(a, b, >, "be greater than", __VA_ARGS__)
+#define AssumeLess(a, b, ...) AssumeBinOp(a, b, <, "be less than", __VA_ARGS__)
+#define AssumeGreaterEqual(a, b, ...) AssumeBinOp(a, b, >=, "be greater or equal to", __VA_ARGS__)
+#define AssumeLessEqual(a, b, ...) AssumeBinOp(a, b, <=, "be less or equal to", __VA_ARGS__)
 
-#define AssumingZero(a, ...) AssumingBinOp(a, 0, ==, "be equal to", __VA_ARGS__)
+#define AssumeZero(a, ...) AssumeBinOp(a, 0, ==, "be equal to", __VA_ARGS__)
 
-#define AssumingEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!empty(_assuming_exp_v))) \
+#define AssumeEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!empty(_assuming_exp_v))) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will be empty", { { "size of " #exp, fmt::format(FMT_STRING("{}"), size(_assuming_exp_v)) } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingNotEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(empty(_assuming_exp_v))) \
+#define AssumeNotEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(empty(_assuming_exp_v))) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will not be empty", { { "size of " #exp, fmt::format(FMT_STRING("{}"), size(_assuming_exp_v)) } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingNullOrEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!::ghassanpl::detail::IsNullOrEmpty(_assuming_exp_v))) \
+#define AssumeNullOrEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(!::ghassanpl::detail::IsNullOrEmpty(_assuming_exp_v))) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will be null or empty", { { #exp, _assuming_exp_v ? fmt::format("'{}'", _assuming_exp_v) : "(null)" } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingNotNullOrEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(::ghassanpl::detail::IsNullOrEmpty(_assuming_exp_v))) \
+#define AssumeNotNullOrEmpty(exp, ...) { using std::empty; using std::size; if (decltype(auto) _assuming_exp_v = (exp); GSL_UNLIKELY(::ghassanpl::detail::IsNullOrEmpty(_assuming_exp_v))) \
 	::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #exp " will not be null or empty", { { #exp, _assuming_exp_v ? fmt::format("'{}'", _assuming_exp_v) : "(null)" } }, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); }
 
-#define AssumingValidIndex(_index, _container, ...) { using std::size; decltype(auto) _assuming_index = (_index); decltype(auto) _assuming_container = (_container); const auto _assuming_container_size = size(_assuming_container); \
+#define AssumeValidIndex(_index, _container, ...) { using std::size; decltype(auto) _assuming_index = (_index); decltype(auto) _assuming_container = (_container); const auto _assuming_container_size = size(_assuming_container); \
 	if (GSL_UNLIKELY(!(_assuming_index >= 0 && size_t(_assuming_index) < _assuming_container_size))) { \
 		::ghassanpl::ReportAssumptionFailure(ASSUMING_SL, #_index " will be a valid index to " #_container, { \
 			{ #_index, fmt::format(FMT_STRING("{}"), _assuming_index) }, \
 			{  "size of " #_container, fmt::format(FMT_STRING("{}"), _assuming_container_size) }, \
 		}, ::ghassanpl::detail::AdditionalDataToString(__VA_ARGS__)); } }
 
+#define Assert(exp, ...)																Assume(exp, __VA_ARGS__)
+#define AssertNull(exp, ...)														AssumeNull(exp, __VA_ARGS__) 
+#define AssertNotNull(exp, ...)													AssumeNotNull(exp, __VA_ARGS__)
+#define AssertBinOp(a, b, op, text, ...) 								AssumeBinOp(a, b, op, text, __VA_ARGS__) 
+#define AssertEqual(a, b, ...) 													AssumeEqual(a, b, __VA_ARGS__) 
+#define AssertZero(a, ...) 															AssumeZero(a, __VA_ARGS__) 
+#define AssertNotEqual(a, b, ...) 											AssumeNotEqual(a, b, __VA_ARGS__) 
+#define AssertGreater(a, b, ...) 												AssumeGreater(a, b, __VA_ARGS__) 
+#define AssertLess(a, b, ...) 													AssumeLess(a, b, __VA_ARGS__) 
+#define AssertGreaterEqual(a, b, ...) 									AssumeGreaterEqual(a, b, __VA_ARGS__) 
+#define AssertLessEqual(a, b, ...) 											AssumeLessEqual(a, b, __VA_ARGS__) 
+#define AssertEmpty(exp, ...) 													AssumeEmpty(exp, __VA_ARGS__) 
+#define AssertNotEmpty(exp, ...) 												AssumeNotEmpty(exp, __VA_ARGS__) 
+#define AssertNullOrEmpty(exp, ...) 										AssumeNullOrEmpty(exp, __VA_ARGS__) 
+#define AssertNotNullOrEmpty(exp, ...) 									AssumeNotNullOrEmpty(exp, __VA_ARGS__) 
+#define AssertValidIndex(_index, _container, ...) 			AssumeValidIndex(_index, _container, __VA_ARGS__) 
+
 #else
 
-#define Assuming(exp, ...) GSL_ASSUME(!!(exp))
-#define AssumingNull(exp, ...) GSL_ASSUME(!((exp) != nullptr))
-#define AssumingNotNull(exp, ...) GSL_ASSUME(!((exp) == nullptr))
-#define AssumingBinOp(a, b, op, text, ...) GSL_ASSUME(((a) op (b)))
-#define AssumingEqual(a, b, ...) AssumingBinOp(a, b, ==, "be equal to", __VA_ARGS__)
-#define AssumingZero(a, ...) AssumingBinOp(a, 0, ==, "be equal to", __VA_ARGS__)
-#define AssumingNotEqual(a, b, ...) AssumingBinOp(a, b, !=, "not be equal to", __VA_ARGS__)
-#define AssumingGreater(a, b, ...) AssumingBinOp(a, b, >, "be greater than", __VA_ARGS__)
-#define AssumingLess(a, b, ...) AssumingBinOp(a, b, <, "be less than", __VA_ARGS__)
-#define AssumingGreaterEqual(a, b, ...) AssumingBinOp(a, b, >=, "be greater or equal to", __VA_ARGS__)
-#define AssumingLessEqual(a, b, ...) AssumingBinOp(a, b, <=, "be less or equal to", __VA_ARGS__)
-#define AssumingEmpty(exp, ...) { using std::empty; GSL_ASSUME(empty(exp)); }
-#define AssumingNotEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(!empty(exp)); }
-#define AssumingNullOrEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(::ghassanpl::detail::IsNullOrEmpty(exp));  }
-#define AssumingNotNullOrEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(!::ghassanpl::detail::IsNullOrEmpty(exp)); }
-#define AssumingValidIndex(_index, _container, ...) { using std::size; decltype(auto) _assuming_index = (_index); GSL_ASSUME(((_assuming_index) >= 0 && size_t(_assuming_index) < size(_container))); }
+#define Assume(exp, ...) GSL_ASSUME(!!(exp))
+#define AssumeNull(exp, ...) GSL_ASSUME(!((exp) != nullptr))
+#define AssumeNotNull(exp, ...) GSL_ASSUME(!((exp) == nullptr))
+#define AssumeBinOp(a, b, op, text, ...) GSL_ASSUME(((a) op (b)))
+#define AssumeEqual(a, b, ...) AssumeBinOp(a, b, ==, "be equal to", __VA_ARGS__)
+#define AssumeZero(a, ...) AssumeBinOp(a, 0, ==, "be equal to", __VA_ARGS__)
+#define AssumeNotEqual(a, b, ...) AssumeBinOp(a, b, !=, "not be equal to", __VA_ARGS__)
+#define AssumeGreater(a, b, ...) AssumeBinOp(a, b, >, "be greater than", __VA_ARGS__)
+#define AssumeLess(a, b, ...) AssumeBinOp(a, b, <, "be less than", __VA_ARGS__)
+#define AssumeGreaterEqual(a, b, ...) AssumeBinOp(a, b, >=, "be greater or equal to", __VA_ARGS__)
+#define AssumeLessEqual(a, b, ...) AssumeBinOp(a, b, <=, "be less or equal to", __VA_ARGS__)
+#define AssumeEmpty(exp, ...) { using std::empty; GSL_ASSUME(empty(exp)); }
+#define AssumeNotEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(!empty(exp)); }
+#define AssumeNullOrEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(::ghassanpl::detail::IsNullOrEmpty(exp));  }
+#define AssumeNotNullOrEmpty(exp, ...) { using std::empty; using std::size; GSL_ASSUME(!::ghassanpl::detail::IsNullOrEmpty(exp)); }
+#define AssumeValidIndex(_index, _container, ...) { using std::size; decltype(auto) _assuming_index = (_index); GSL_ASSUME(((_assuming_index) >= 0 && size_t(_assuming_index) < size(_container))); }
+
+#define Assert(exp, ...)
+#define AssertNull(exp, ...) 
+#define AssertNotNull(exp, ...)
+#define AssertBinOp(a, b, op, text, ...) 
+#define AssertEqual(a, b, ...) 
+#define AssertZero(a, ...) 
+#define AssertNotEqual(a, b, ...) 
+#define AssertGreater(a, b, ...) 
+#define AssertLess(a, b, ...) 
+#define AssertGreaterEqual(a, b, ...) 
+#define AssertLessEqual(a, b, ...) 
+#define AssertEmpty(exp, ...) 
+#define AssertNotEmpty(exp, ...) 
+#define AssertNullOrEmpty(exp, ...) 
+#define AssertNotNullOrEmpty(exp, ...) 
+#define AssertValidIndex(_index, _container, ...) 
 
 #endif
 
@@ -138,7 +172,7 @@ namespace ghassanpl
 	void ReportAssumptionFailure(::ghassanpl::detail::source_location where, std::string_view expectation, std::initializer_list<std::pair<std::string_view, std::string>> values, std::string data);
 }
 /*
-#define AssumingBetween(v, a, b, ...) { Assuming_GET(v_v, v); Assuming_GET(a_v, a); Assuming_GET(b_v, b); \
-	Assuming_IFFALSE(v_v >= a_v && v_v < b_v) { Assuming_START(); Assuming_FAILED(#v " will be between " #a " (inclusive) and " #b " (exclusive"); \
-	Assuming_VAL(v_v, #v); Assuming_VAL(a_v, #a); Assuming_VAL(b_v, #b); Assuming_FINISH(__VA_ARGS__); } }
+#define AssumeBetween(v, a, b, ...) { Assume_GET(v_v, v); Assume_GET(a_v, a); Assume_GET(b_v, b); \
+	Assume_IFFALSE(v_v >= a_v && v_v < b_v) { Assume_START(); Assume_FAILED(#v " will be between " #a " (inclusive) and " #b " (exclusive"); \
+	Assume_VAL(v_v, #v); Assume_VAL(a_v, #a); Assume_VAL(b_v, #b); Assume_FINISH(__VA_ARGS__); } }
 */
